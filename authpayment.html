@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.kushkipagos.com/kushki.min.js"></script>
+    <h1>Kushki</h1>
+    <h2>Pre - Autorizar Pagos</h2>
+    
+    <div>
+        <text>Integración creada usando Kushki.js</text>
+      </div>
+      <br>  
+      
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>  
+            <li class="nav-item">
+              <a class="nav-link" href="authpayment.html">Autorizaciones de Pago</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="capauthpayment.html">Capturar autorización de Pago</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="infosuscription.html">Información de Suscripción</a>
+            </li>  
+            <li class="nav-item">
+              <a class="nav-link" href="voidtransaction.html">Transacción nula</a>
+            </li>     
+            <li class="nav-item">
+              <a class="nav-link" href="transactionlist.html">Lista de Transacciones</a>
+            </li>         
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+
+      <form id="auth-form">    
+        <div class="form-group"></div>
+        <label for="susid">subscriptionId</label>  
+        <input placeholder="subscriptionId" type="text" name="susid" id="susid" class="form-control">
+        </div>
+        <div class="form-group"></div>
+          <button id="submit">Revisar Pre - Autorizar Pagos</button>
+        </div>
+      </form>
+      <br>
+      <br>
+      <br>
+      
+      <div class="alert alert-info" id="result">
+        <strong>Info!</strong> Indicates a neutral informative change or action.
+      </div>
+</body>
+
+<script type="text/javascript">
+
+    $( "#auth-form" ).submit(function( event ) {                   
+            event.preventDefault();
+      });      
+
+      $('#submit').on('click', function(){
+        var susid = $('#susid').val();              
+
+        getAuth(susid);
+        
+      });
+
+    function getAuth(susid)
+    {
+       
+          var data = JSON.stringify({
+                  "amount": {
+                    "ice": 0,
+                    "iva": 0,
+                    "subtotalIva": 0,
+                    "subtotalIva0": 600,
+                    "currency": "USD"
+                  },
+                  "name": "Juan",
+                  "lastName": "Perez",
+                  "email": "test@yourdomain.com",
+                  "fullResponse": true
+                });
+
+                var xhr = new XMLHttpRequest();
+                xhr.withCredentials = true;
+
+                xhr.addEventListener("readystatechange", function () {
+                  if (this.readyState === this.DONE) {
+                    console.log(this.responseText);
+                    var obj = JSON.parse(this.responseText);
+                    $('#result').html('<div class="alert alert-success" role="alert"> '+this.responseText+' </div>');  
+                  }
+                });
+
+                xhr.open("POST", "https://api-uat.kushkipagos.com/subscriptions/v1/card/1630204096909000/authorize");
+                xhr.setRequestHeader("private-merchant-id", "159aa9e67ff0475e8f73d684ed38ac77");
+                xhr.setRequestHeader("content-type", "application/json");
+
+                xhr.send(data);
+    }
+ </script>
+</html>
